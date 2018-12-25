@@ -30,6 +30,7 @@ Plugin 'ervandew/supertab' "使用supertab插件配合jedi-vim，利用tab键进
 Plugin 'tmhedberg/SimpylFold' "码折叠，za快捷键
 Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'} "Powerline状态栏
 Plugin 'jnurmine/Zenburn' "配色方案
+Plugin 'vim-scripts/DoxygenToolkit.vim' "注释自动生成
 " All of your Plugins must be added before the following line
 " 置于call vundle#begin()和call vundle#end()之间，保存配置后在vim中执行
 call vundle#end()            " required
@@ -76,9 +77,9 @@ au BufNewFile,BufRead *.js, *.html, *.css
 "au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
 "indentLine缩进显示, 没有起作用??????
-let g:indentLine_char='┆'
+let g:indentLine_char='|'
 let g:indentLine_enabled = 1
-"let g:indentLine_color_term = 239
+let g:indentLine_color_term = 239
 "映射到ctrl+i键
 "map <C-i> :IndentLinesToggle<CR>
 
@@ -101,6 +102,63 @@ let NERDTreeIgnore=['\.pyc$', '\~$'] "ignore files in NERDTree
 "let g:Powerline_symbols = 'fancy'
 let g:Powerline_symbols = 'unicode'
 
+"doxygen注释自动生成,DoxAuthor文件头,DoxLic版权,Dox:function/class,DoxBlock注释块
+let g:DoxygenToolkit_commentType="python"
+let g:DoxygenToolkit_blockHeader="*******************************************************" "function dox里的 
+let g:DoxygenToolkit_blockFooter="*******************************************************"
+"let s:licenseTag="\<enter>"
+"let s:licenseTag=s:licenseTag . "Copyright JesseXuan.\<enter>"
+"let g:DoxygenToolkit_licenseTag=s:licenseTag
+let g:DoxygenToolkit_licenseTag="Copyright JesseXuan\<enter>"
+let g:DoxygenToolkit_fileTag="@File: "
+let g:DoxygenToolkit_briefTag_funcName="no" "是指是否在注释中自动包含函数名称
+let g:DoxygenToolkit_briefTag_pre="@Desc: "
+let g:DoxygenToolkit_authorTag="@Author: "
+let g:DoxygenToolkit_authorName="JesseXuan"
+let g:DoxygenToolkit_versionTag="@Version: "
+let g:DoxygenToolkit_dateTag="@Date: "
+let g:DoxygenToolkit_paramTag_pre="@Param: "
+let g:DoxygenToolkit_returnTag="@Return: "
+let g:DoxygenToolkit_blockTag="@Name: "
+let g:DoxygenToolkit_classTag="@Class: "
+"let g:DoxygenToolKit_startCommentBlock="#"
+"let g:DoxygenToolKit_interCommentBlock="/"
+let g:doxygen_enhanced_color=1
+"vmap <C-S-P>    dO#endif<Esc>PO#if 0<Esc>
+map <F9> :DoxAuthor<CR>
+map <F10> :DoxLic<CR>
+map <F11> :Dox<CR>
+map <F12> :DoxBlock<CR>
+"map <F4>b :DoxBlock<CR>
+"map <F4>l :DoxLic<CR>
+"map <F4>c odocClass<C-B>
+"map <F4>m odocMember<C-B>
+
+"hd key to add python/sh header to new py/sh file快捷键hd为sh,py文件插入文件头部
+map hd :call ScriptsHeader()<CR>
+func! ScriptsHeader()
+  if &filetype == 'python'
+    call setline(1, "#!/usr/bin/env python")
+    call append(line("."), "#-*- coding:utf-8 -*-")
+    call append(line(".")+1, "\# @File: ".expand("%"))
+    call append(line(".")+2, "\# @Desc: ")
+    call append(line(".")+3, "# @Author: JesseXuan")
+    call append(line(".")+4, "# @Date: ". strftime('%Y-%m-%d', localtime()))
+    call append(line(".")+5, "# @Version: ")
+    call append(line(".")+6, "")
+  else
+    call setline(1, "#!/bin/bash")
+    call append(line("."), "\# FileName: ".expand("%"))
+    call append(line(".")+1, "\# Desc: ")
+    call append(line(".")+2, "\# Author: JesseXuan")
+    call append(line(".")+3, "\# Date: ".strftime("%Y-%m-%d"))
+    call append(line(".")+4, "")
+  endif
+  "新建文件后，自动定位到文件末尾
+  autocmd BufNewFile * normal G
+endfunc
+
+"F5 run py script
 map <F5> :call RunPython()<CR>
 func! RunPython()
   exec "W"
@@ -108,6 +166,8 @@ func! RunPython()
     exec "!time python2.7 %"
   endif
 endfunc
+
+"dir tree
 map <C-n> :NERDTreeToggle<CR>
 
 "F8 pep8, pip install autopep8
