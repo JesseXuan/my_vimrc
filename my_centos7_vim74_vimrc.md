@@ -52,20 +52,31 @@ set encoding=utf-8  "编码
 set fenc=utf-8      "编码
 set mouse=a        "启用鼠标
 set hlsearch        "搜索高亮
+set smartindent    "智能对齐
+set cindent        "C
 syntax on    "语法高亮
 let python_highlight_all=1
 
 colorscheme zenburn "配色
 
-"要支持PEP8风格的缩进
-au BufNewFile,BufRead *.py
-\ set tabstop=4   "tab宽度
-\ set softtabstop=4  
-\ set shiftwidth=4   
-\ set textwidth=79  "行最大宽度
-\ set expandtab       "tab替换为空格键
-\ set autoindent      "自动缩进
-\ set fileformat=unix   "保存文件格式
+"要支持PEP8风格的缩进,(以下注释的缩进却是8个空格，暂时不清楚为什么???)
+"au BufNewFile,BufRead *.py
+"\ set autoindent"自动缩进
+"\ set expandtab"tab替换为空格键
+"\ set tabstop=4"tab宽度
+"\ set softtabstop=4
+"\ set shiftwidth=4
+"\ set textwidth=79"行最大宽度
+"\ set fileformat=unix "保存文件格式
+set filetype=python
+au BufNewFile,BufRead *.py,*.pyw setf python
+set autoindent
+set expandtab"tab替换为空格键
+set tabstop=4"tab宽度
+set softtabstop=4
+set shiftwidth=4
+set textwidth=79"行最大宽度
+set fileformat=unix "保存文件格式
 
 "对于全栈开发,你可以设置针对每种文件类型设置au命令
 au BufNewFile,BufRead *.js, *.html, *.css
@@ -73,7 +84,7 @@ au BufNewFile,BufRead *.js, *.html, *.css
 \ set softtabstop=2
 \ set shiftwidth=2
 
-"标示不必要的空白字符,这会将多余的空白字符标示出来，很可能会将它们变成红色突出
+"标示不必要的空白字符,这会将多余的空白字符标示出来，很可能会将它们变成红色突出???
 "au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
 "indentLine缩进显示, 没有起作用??????
@@ -155,7 +166,7 @@ func! ScriptsHeader()
     call append(line(".")+4, "")
   endif
   "新建文件后，自动定位到文件末尾
-  autocmd BufNewFile * normal G
+  normal G
 endfunc
 
 "F5 run py script
