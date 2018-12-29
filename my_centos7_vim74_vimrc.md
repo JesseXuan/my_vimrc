@@ -169,7 +169,7 @@ func! ScriptsHeader()
   normal G
 endfunc
 
-"F5 run py script
+"F5 run py2 script
 map <F5> :call RunPython()<CR>
 func! RunPython()
   exec "W"
@@ -177,6 +177,16 @@ func! RunPython()
     exec "!time python2.7 %"
   endif
 endfunc
+
+"F6 run py3 script
+map <F6> :call RunPython3()<CR>
+func! RunPython3()
+  exec "W"
+  if &filetype == 'python'
+    exec "!time python3 %"
+  endif
+endfunc
+
 
 "dir tree
 map <C-n> :NERDTreeToggle<CR>
