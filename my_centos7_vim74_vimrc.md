@@ -100,7 +100,7 @@ set foldlevel=99
 " Enable folding with the spacebar
 nnoremap <space> za
 
-"tab补全,pip install jedi
+"tab补全,pip install jedi ,cd ~/.vim/bundle/jedi-vim/ && git submodule update --init
 let g:SuperTabDefaultCompletionType = "context"
 let g:jedi#popup_on_dot = 0
 "tab补全
@@ -168,6 +168,17 @@ func! ScriptsHeader()
   "新建文件后，自动定位到文件末尾
   normal G
 endfunc
+
+"python with virtualenv support
+py << EOF
+import os.path
+import sys
+if 'VIRTUA_ENV' in os.environ:
+  project_base_dir = os.environ['VIRTUAL_ENV']
+  sys.path.insert(0, project_base_dir)
+  activate_this = os.path.join(project_base_dir,'bin/activate_this.py')
+  execfile(activate_this, dict(__file__=activate_this))
+EOF
 
 "F5 run py2 script
 map <F5> :call RunPython()<CR>
